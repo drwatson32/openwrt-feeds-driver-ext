@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
-KERNELDIR ?= /lib/modules/$(shell uname -r)/build
+KERNELDIR ?= /lib/modules/$(KVER)/build 
 PWD       := $(shell pwd)
 
 CONFIG_RTW88_CORE=m

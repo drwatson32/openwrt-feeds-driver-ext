@@ -5,16 +5,35 @@
 #ifndef __RTK_MAIN_H_
 #define __RTK_MAIN_H_
 
+#include <linux/version.h>
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 11, 0)
+#include "compiler.h"
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 8, 0)
+#include "sch_generic.h"
+#endif
+#endif
 #include <net/mac80211.h>
 #include <linux/vmalloc.h>
 #include <linux/firmware.h>
 #include <linux/average.h>
 #include <linux/bitops.h>
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 19, 0)
 #include <linux/bitfield.h>
+#else
+#include "bitfield.h"
+#endif
 #include <linux/iopoll.h>
 #include <linux/interrupt.h>
+#include <linux/workqueue.h>
 
 #include "util.h"
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 8, 0)
+#include <linux/etherdevice.h>
+#endif
+
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 7, 0)
+#define NUM_NL80211_BANDS IEEE80211_NUM_BANDS
+#endif
 
 /**
  * read_poll_timeout - Periodically poll an address until a condition is
@@ -101,6 +120,15 @@
 	} \
 	(cond) ? 0 : -ETIMEDOUT; \
 })
+
+#ifndef fallthrough
+#define fallthrough do {} while (0)
+#endif
+
+#ifndef static_assert
+#define static_assert(expr, ...) __static_assert(expr, ##__VA_ARGS__, #expr)
+#define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+#endif
 
 #define RTW_MAX_MAC_ID_NUM		32
 #define RTW_MAX_SEC_CAM_NUM		32
