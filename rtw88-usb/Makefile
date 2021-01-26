@@ -43,4 +43,4 @@ define Build/Compile
                 modules
 endef
 
-$(eval $(call KernelPackage,rtw88))
+$(eval $(call KernelPackage,rtw88-usb))
